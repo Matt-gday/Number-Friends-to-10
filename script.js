@@ -26,6 +26,8 @@ class NumberBubbleGame {
         ];
         
         this.numberPairs = [
+            [0, 10], [1, 9], [2, 8], [3, 7], [4, 6], [5, 5],
+            [0, 10], [1, 9], [2, 8], [3, 7], [4, 6], [5, 5],
             [0, 10], [1, 9], [2, 8], [3, 7], [4, 6], [5, 5]
         ];
         
@@ -48,6 +50,10 @@ class NumberBubbleGame {
         this.selectedBubble = null;
         this.gameRunning = true;
         this.gamePaused = false;
+        
+        // Reset level-specific values to initial state
+        this.bubblesPerLevel = 6; // Reset to level 1 bubble count
+        this.bubbleSpeed = 0.6; // Reset to initial speed
         this.totalBubblesThisLevel = this.bubblesPerLevel;
         this.bubblesPopped = 0;
         
@@ -63,7 +69,7 @@ class NumberBubbleGame {
     
     spawnLevelBubbles() {
         const pairs = [...this.numberPairs];
-        const bubblesNeeded = Math.min(this.bubblesPerLevel, pairs.length * 2);
+        const bubblesNeeded = this.bubblesPerLevel;
         const pairsNeeded = Math.ceil(bubblesNeeded / 2);
         
         // Shuffle and select pairs for this level
@@ -213,10 +219,15 @@ class NumberBubbleGame {
     
     nextLevel() {
         this.level++;
-        this.bubblesPerLevel = Math.min(6 + (this.level - 1) * 2, 12); // Increase bubbles per level
-        this.totalBubblesThisLevel = this.bubblesPerLevel; // Set total for this level
-        this.bubblesPopped = 0; // Reset popped count for new level
-        // Keep bubble speed constant - no speed increase
+        // Start with 6 bubbles (3 pairs), increase by 2 each level (1 pair)
+        this.bubblesPerLevel = 6 + (this.level - 1) * 2;
+        this.totalBubblesThisLevel = this.bubblesPerLevel;
+        this.bubblesPopped = 0;
+        
+        // Increase speed starting at level 10
+        if (this.level >= 10) {
+            this.bubbleSpeed = 0.8; // Slightly faster speed from level 10 onwards
+        }
         
         document.getElementById('levelComplete').style.display = 'none';
         this.updateDisplay();
